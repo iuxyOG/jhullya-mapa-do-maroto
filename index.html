@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mapa do Maroto - Jhullya Isabela</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#0a1020" />
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <div>
+          <div class="brand-title">Mapa do Maroto</div>
+          <div class="brand-sub">Jhullya Isabela</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button id="btn-sound" class="ghost" aria-pressed="false" aria-label="Ativar sons">Som</button>
+        <button id="btn-mode" class="ghost" aria-pressed="false" aria-label="Alternar modo noite">Modo Lua</button>
+        <button id="btn-centralize" class="ghost" aria-label="Centralizar mapa">Centralizar</button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section id="screen-intro" class="screen active" aria-hidden="false">
+        <div class="intro-wrap">
+          <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Abrir carta">
+            <div class="envelope-back"></div>
+            <div class="envelope-front"></div>
+            <div class="seal" aria-hidden="true"></div>
+            <div class="letter" aria-hidden="true">
+              <h1>Convite do Mapa</h1>
+              <p>Ha um caminho tecido por ciencia, estrelas e segredos. Hoje, um mapa decide confiar sua tinta a voce.</p>
+              <p>Seja curiosa, seja gentil, e deixe a magia responder.</p>
+              <div class="intro-cta">
+                <button id="btn-start" class="primary">Comecar Descobertas</button>
+                <button id="btn-skip" class="ghost">Ir direto ao Mapa</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-quiz" class="screen" aria-hidden="true">
+        <div class="quiz-wrap">
+          <div class="quiz-header">
+            <div class="quiz-step" id="quiz-step">Parte 1 de 3</div>
+            <div class="quiz-title" id="quiz-title">Casa</div>
+          </div>
+          <div class="quiz-card" id="quiz-card">
+            <div class="quiz-question" id="quiz-question">Pergunta</div>
+            <div class="quiz-answers" id="quiz-answers"></div>
+          </div>
+          <div class="quiz-footer">
+            <button id="quiz-prev" class="ghost">Voltar</button>
+            <button id="quiz-next" class="primary">Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-results" class="screen" aria-hidden="true">
+        <div class="results-wrap">
+          <h2>Seu Mapa Respondeu</h2>
+          <div class="results-grid">
+            <div class="result-panel">
+              <h3>Varinha</h3>
+              <svg id="wand-svg" viewBox="0 0 400 120" role="img" aria-label="Varinha desenhada">
+                <path id="wand-path" d="M20 90 C120 60 260 20 380 30" />
+                <circle id="wand-spark" cx="20" cy="90" r="6" />
+              </svg>
+              <div id="wand-text"></div>
+            </div>
+            <div class="result-panel">
+              <h3>Patrono</h3>
+              <canvas id="patronus-canvas" width="420" height="240" aria-label="Constelacao do patrono"></canvas>
+              <div id="patronus-text"></div>
+            </div>
+          </div>
+          <div class="results-actions">
+            <button id="btn-to-map" class="primary">Ir ao Mapa</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-map" class="screen" aria-hidden="true">
+        <div class="map-wrap">
+          <div id="map-container" class="map-container" aria-label="Mapa do Maroto" role="application">
+            <canvas id="map-texture"></canvas>
+            <div id="map-ink-reveal" class="map-ink-reveal" aria-hidden="true"></div>
+            <div id="map-viewport" class="map-viewport">
+              <svg id="map-svg" viewBox="0 0 2000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+              <div id="map-pins" class="map-pins" aria-hidden="true"></div>
+              <canvas id="footprint-canvas" width="2000" height="1000" aria-hidden="true"></canvas>
+            </div>
+            <canvas id="lighting-canvas" aria-hidden="true"></canvas>
+          </div>
+          <div class="map-hud">
+            <div class="hud-item">Explorado: <span id="hud-progress">0%</span></div>
+            <div class="hud-item">Selos: <span id="hud-stamps">0</span></div>
+            <div class="hud-item">Zoom: <span id="hud-zoom">100%</span></div>
+            <button id="btn-outro" class="ghost hud-button" aria-label="Ir ao encerramento" hidden>Encerramento</button>
+          </div>
+          <div class="map-compass" aria-hidden="true">
+            <div class="compass-needle"></div>
+          </div>
+          <div class="map-minimap" aria-label="Minimapa">
+            <canvas id="minimap-canvas" width="220" height="120"></canvas>
+            <div id="minimap-viewport" class="minimap-viewport"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-outro" class="screen" aria-hidden="true">
+        <div class="outro-wrap">
+          <h2>Juro solenemente que...</h2>
+          <p>...cada passo deixou um rastro de carinho. Que o mapa continue abrindo portas, agora e sempre.</p>
+          <button id="btn-restart" class="ghost">Rever experiencia</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card" role="document">
+        <button class="modal-close" data-close="true" aria-label="Fechar">×</button>
+        <div id="modal-content"></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/transitions.js"></script>
+  <script src="js/map/map-texture.js"></script>
+  <script src="js/map/map-engine.js"></script>
+  <script src="js/map/map-render.js"></script>
+  <script src="js/map/map-gestures.js"></script>
+  <script src="js/map/map-missions.js"></script>
+  <script src="js/map/map-secrets.js"></script>
+  <script src="js/fx/particles.js"></script>
+  <script src="js/fx/ink.js"></script>
+  <script src="js/fx/stamp.js"></script>
+  <script src="js/fx/footprint.js"></script>
+  <script src="js/fx/lighting.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

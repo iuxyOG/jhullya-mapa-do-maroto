@@ -4,17 +4,47 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mapa do Maroto - Jhullya Isabela</title>
+  <meta name="description" content="Experiência fan-made do Mapa do Maroto para Jhullya Isabela: magia, ciência e descobertas. Quiz de casa, varinha e patrono, mapa interativo e missões." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <meta name="theme-color" content="#0a1020" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/icon.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="assets/icon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Open Graph para compartilhar no WhatsApp, redes sociais -->
+  <meta property="og:title" content="Mapa do Maroto - Jhullya Isabela" />
+  <meta property="og:description" content="Um mapa tecido por ciência, estrelas e segredos. Descubra sua casa, varinha e patrono." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="assets/og-image.png" />
+  <meta name="twitter:title" content="Mapa do Maroto - Jhullya Isabela" />
+  <meta name="twitter:description" content="Um mapa tecido por ciência, estrelas e segredos. Feito para você." />
 </head>
 <body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+  <div id="loader" class="loader" aria-live="polite" aria-label="Carregando">
+    <div class="loader-bg"></div>
+    <div class="loader-content">
+      <div class="loader-mark"></div>
+      <h1 class="loader-title">Mapa do Maroto</h1>
+      <p class="loader-name">Jhullya Isabela</p>
+      <p class="loader-message">Preparando algo especial para você...</p>
+      <div class="loader-bar"><span class="loader-progress"></span></div>
+      <p class="loader-heart">♥</p>
+    </div>
+  </div>
   <div id="app" class="app">
     <header class="topbar">
       <div class="brand">
         <span class="brand-mark"></span>
         <div>
           <div class="brand-title">Mapa do Maroto</div>
-          <div class="brand-sub">Jhullya Isabela</div>
+          <div class="brand-sub">Jhullya Isabela · Um mapa só seu</div>
         </div>
       </div>
       <div class="topbar-actions">
@@ -24,7 +54,7 @@
       </div>
     </header>
 
-    <main class="stage">
+    <main id="main" class="stage" tabindex="-1">
       <section id="screen-intro" class="screen active" aria-hidden="false">
         <div class="intro-wrap">
           <div class="envelope" id="envelope" tabindex="0" role="button" aria-label="Abrir carta">
@@ -33,11 +63,12 @@
             <div class="seal" aria-hidden="true"></div>
             <div class="letter" aria-hidden="true">
               <h1>Convite do Mapa</h1>
-              <p>Ha um caminho tecido por ciencia, estrelas e segredos. Hoje, um mapa decide confiar sua tinta a voce.</p>
-              <p>Seja curiosa, seja gentil, e deixe a magia responder.</p>
+              <p>Há um caminho tecido por ciência, estrelas e segredos — e foi feito pensando em você.</p>
+              <p>Hoje, este mapa decide confiar sua tinta só a você. Cada linha que aparecer será um passo nosso.</p>
+              <p>Seja curiosa, seja gentil, e deixe a magia responder. <span class="letter-heart">♥</span></p>
               <div class="intro-cta">
-                <button id="btn-start" class="primary">Comecar Descobertas</button>
-                <button id="btn-skip" class="ghost">Ir direto ao Mapa</button>
+                <button id="btn-start" class="primary">Começar descobertas</button>
+                <button id="btn-skip" class="ghost">Ir direto ao mapa</button>
               </div>
             </div>
           </div>
@@ -63,30 +94,45 @@
 
       <section id="screen-results" class="screen" aria-hidden="true">
         <div class="results-wrap">
-          <h2>Seu Mapa Respondeu</h2>
+          <h2>Seu mapa respondeu</h2>
+          <p class="results-romantic">O mapa escolheu para você — com carinho.</p>
           <div class="results-grid">
-            <div class="result-panel">
+            <div class="result-panel result-panel-wand">
               <h3>Varinha</h3>
+              <div class="wand-image" role="img" aria-hidden="true"></div>
               <svg id="wand-svg" viewBox="0 0 400 120" role="img" aria-label="Varinha desenhada">
-                <path id="wand-path" d="M20 90 C120 60 260 20 380 30" />
-                <circle id="wand-spark" cx="20" cy="90" r="6" />
+                <defs>
+                  <filter id="wand-glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <filter id="spark-glow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                </defs>
+                <path id="wand-path" d="M20 90 C120 60 260 20 380 30" filter="url(#wand-glow)" />
+                <circle id="wand-spark" cx="20" cy="90" r="6" filter="url(#spark-glow)" />
               </svg>
               <div id="wand-text"></div>
             </div>
-            <div class="result-panel">
+            <div class="result-panel result-panel-patronus">
               <h3>Patrono</h3>
-              <canvas id="patronus-canvas" width="420" height="240" aria-label="Constelacao do patrono"></canvas>
+              <div class="patronus-canvas-wrap">
+                <canvas id="patronus-canvas" width="420" height="240" aria-label="Constelação do patrono"></canvas>
+              </div>
               <div id="patronus-text"></div>
             </div>
           </div>
           <div class="results-actions">
-            <button id="btn-to-map" class="primary">Ir ao Mapa</button>
+            <button id="btn-to-map" class="primary btn-to-map">Ir ao mapa</button>
           </div>
         </div>
       </section>
 
       <section id="screen-map" class="screen" aria-hidden="true">
         <div class="map-wrap">
+          <div class="map-frame">
           <div id="map-container" class="map-container" aria-label="Mapa do Maroto" role="application">
             <canvas id="map-texture"></canvas>
             <div id="map-ink-reveal" class="map-ink-reveal" aria-hidden="true"></div>
@@ -96,6 +142,7 @@
               <canvas id="footprint-canvas" width="2000" height="1000" aria-hidden="true"></canvas>
             </div>
             <canvas id="lighting-canvas" aria-hidden="true"></canvas>
+          </div>
           </div>
           <div class="map-hud">
             <div class="hud-item">Explorado: <span id="hud-progress">0%</span></div>
@@ -117,7 +164,9 @@
         <div class="outro-wrap">
           <h2>Juro solenemente que...</h2>
           <p>...cada passo deixou um rastro de carinho. Que o mapa continue abrindo portas, agora e sempre.</p>
-          <button id="btn-restart" class="ghost">Rever experiencia</button>
+          <p class="outro-romantic">Que cada estrela neste mapa lembre que você é especial. Obrigado por percorrer cada caminho comigo.</p>
+          <p class="outro-dedication">Para Jhullya Isabela, com todo carinho.<br />21 de setembro.</p>
+          <button id="btn-restart" class="ghost">Rever experiência</button>
         </div>
       </section>
     </main>

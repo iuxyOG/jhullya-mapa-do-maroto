@@ -2,18 +2,20 @@
   const { qs, qsa, state, saveState, events } = window.APP;
   const pinsWrap = () => qs('#map-pins');
 
+  const categoryLabel = { HP: 'Harry Potter', ciencia: 'Ciência', segredo: 'Segredo' };
+
   const list = [
     { id: 'm1', x: 18, y: 78, label: 'Bolo Tortinho', category: 'HP', type: 'info' },
     { id: 'm2', x: 28, y: 82, label: 'Oficina Weasley', category: 'HP', type: 'choice' },
-    { id: 'm3', x: 46, y: 34, label: 'Ciencia Relampago', category: 'ciencia', type: 'choice' },
-    { id: 'm4', x: 56, y: 48, label: 'Laboratorio', category: 'ciencia', type: 'input' },
-    { id: 'm5', x: 66, y: 68, label: 'Pocao Azul', category: 'HP', type: 'multi' },
+    { id: 'm3', x: 46, y: 34, label: 'Ciência Relâmpago', category: 'ciencia', type: 'choice' },
+    { id: 'm4', x: 56, y: 48, label: 'Laboratório', category: 'ciencia', type: 'input' },
+    { id: 'm5', x: 66, y: 68, label: 'Poção Azul', category: 'HP', type: 'multi' },
     { id: 'm6', x: 76, y: 28, label: 'Observatorio', category: 'ciencia', type: 'choice' },
     { id: 'm7', x: 38, y: 56, label: 'Cifra de Cesar', category: 'segredo', type: 'input' },
     { id: 'm8', x: 82, y: 22, label: 'Torre da Lua', category: 'segredo', type: 'mode' },
     { id: 'm9', x: 62, y: 84, label: 'Floresta', category: 'segredo', type: 'click3' },
     { id: 'm10', x: 48, y: 70, label: 'Biblioteca', category: 'HP', type: 'order' },
-    { id: 'm11', x: 22, y: 46, label: 'Ciencia Viva', category: 'ciencia', type: 'choice' },
+    { id: 'm11', x: 22, y: 46, label: 'Ciência Viva', category: 'ciencia', type: 'choice' },
     { id: 'm12', x: 72, y: 44, label: 'Patrono Eco', category: 'segredo', type: 'choice' },
     { id: 'm13', x: 54, y: 18, label: 'Estrela Guia', category: 'segredo', type: 'hotcold' },
     { id: 'm14', x: 90, y: 54, label: 'Lumos / Nox', category: 'HP', type: 'toggle' },
@@ -57,7 +59,7 @@
     state.missionsDone[mission.id] = true;
     if (!state.stamps.includes(mission.id)) state.stamps.push(mission.id);
     saveState();
-    window.APP.toast(`${mission.label} concluida. ${rewardText}`);
+    window.APP.toast(`${mission.label} concluída. ${rewardText}`);
     window.APP.stamp.play();
     if (mission.id === 'm2') window.APP.footprints.vivid();
     renderPins();
@@ -71,7 +73,7 @@
     wrapper.innerHTML = `<h3>${mission.label}</h3>`;
 
     const info = document.createElement('p');
-    info.textContent = `Categoria: ${mission.category}`;
+    info.textContent = `Categoria: ${categoryLabel[mission.category] || mission.category}`;
     wrapper.appendChild(info);
 
     const helper = document.createElement('div');
@@ -109,7 +111,7 @@
         ['Jupiter', 'Marte', 'Venus'].forEach((opt) => createOption(opt));
       }
       if (mission.id === 'm11') {
-        q.textContent = 'Qual e o maior orgao do corpo humano?'; correct = 'Pele';
+        q.textContent = 'Qual é o maior órgão do corpo humano?'; correct = 'Pele';
         ['Cerebro', 'Pele', 'Pulmao'].forEach((opt) => createOption(opt));
       }
       if (mission.id === 'm12') {
@@ -144,10 +146,10 @@
       input.style.margin = '10px 0 16px';
 
       if (mission.id === 'm4') {
-        label.textContent = 'Senha do laboratorio (dica: curiosidade):';
+        label.textContent = 'Senha do laboratório (dica: curiosidade):';
       }
       if (mission.id === 'm7') {
-        label.textContent = 'Decifre a cifra de Cesar +3: "fdulqkr h fxulrvlgdgh"';
+        label.textContent = 'Decifre a cifra de César +3: "fdulqkr h fxulrvlgdgh"';
       }
 
       helper.appendChild(label);
@@ -156,9 +158,11 @@
         const value = input.value.trim().toLowerCase();
         if (mission.id === 'm4') {
           if (value === 'curiosidade') {
-            completeMission(mission, 'Porta aberta com ciencia.');
+            completeMission(mission, 'Porta aberta com ciência.');
+          } else if (value === 'te amo' || value === 'amor' || value === 'jhullya') {
+            window.APP.mapSecrets.mapRespond('O mapa sussurra: você é a magia que move esta tinta. ♥');
           } else if (value.includes('azul')) {
-            window.APP.mapSecrets.mapRespond('O mapa responde: azul tambem e abraco.');
+            window.APP.mapSecrets.mapRespond('O mapa responde: azul também é abraço.');
           } else {
             window.APP.toast('Senha incorreta.');
           }
@@ -167,14 +171,14 @@
           if (value === 'carinho e curiosidade') {
             completeMission(mission, 'Selo criptografado desbloqueado.');
           } else {
-            window.APP.toast('Cifra nao decifrada.');
+            window.APP.toast('Cifra não decifrada.');
           }
         }
       });
     }
 
     if (mission.type === 'multi') {
-      helper.innerHTML = '<p>Escolha tres ingredientes para a pocao azul calma.</p>';
+      helper.innerHTML = '<p>Escolha três ingredientes para a poção azul calma.</p>';
       const options = ['lua', 'menta', 'brilho', 'cinzas', 'sal'];
       const picks = new Set();
       options.forEach((opt) => {
@@ -189,7 +193,7 @@
       });
       addButton('Misturar', () => {
         const ok = ['lua', 'menta', 'brilho'].every((i) => picks.has(i)) && picks.size === 3;
-        if (ok) completeMission(mission, 'Pocao azul confirmada.');
+        if (ok) completeMission(mission, 'Poção azul confirmada.');
         else window.APP.toast('A tinta borbulha. Ingredientes errados.');
       });
     }
@@ -203,7 +207,7 @@
     }
 
     if (mission.type === 'click3') {
-      helper.innerHTML = '<p>Toque tres pontos diferentes na floresta.</p>';
+      helper.innerHTML = '<p>Toque três pontos diferentes na floresta.</p>';
       const area = document.createElement('div');
       area.style.display = 'grid';
       area.style.gridTemplateColumns = 'repeat(3, 1fr)';
@@ -239,7 +243,7 @@
             if (order.every((o, i) => o === clicked[i])) {
               completeMission(mission, 'Selo da biblioteca conquistado.');
             } else {
-              window.APP.toast('Sequencia incorreta.');
+              window.APP.toast('Sequência incorreta.');
             }
           }
         });

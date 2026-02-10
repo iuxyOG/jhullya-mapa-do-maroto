@@ -8,7 +8,7 @@
     canvas.height = 1024;
     const ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = '#d6c19a';
+    ctx.fillStyle = '#d9c9a8';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -24,10 +24,10 @@
         const idx = (y * canvas.width + x) * 4;
         const n = rand(x * 12.9898 + y * 78.233) * 0.6 + rand(x * 2.11 + y * 9.73) * 0.4;
         const fiber = Math.sin((x + y) * 0.02) * 0.08 + Math.sin(x * 0.12) * 0.05;
-        const base = 210 + n * 18 + fiber * 14;
-        data[idx] = clamp(base + 6, 0, 255);
-        data[idx + 1] = clamp(base - 8, 0, 255);
-        data[idx + 2] = clamp(base - 22, 0, 255);
+        const base = 218 + n * 16 + fiber * 12;
+        data[idx] = clamp(base + 4, 0, 255);
+        data[idx + 1] = clamp(base - 6, 0, 255);
+        data[idx + 2] = clamp(base - 20, 0, 255);
         data[idx + 3] = 255;
       }
     }
@@ -86,17 +86,26 @@
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
-    let dataUrl = localStorage.getItem(textureKey);
-    if (!dataUrl) {
-      dataUrl = generate();
-      try { localStorage.setItem(textureKey, dataUrl); } catch (err) { /* ignore */ }
-    }
-    const img = new Image();
-    img.onload = () => {
+    const drawToCanvas = (img) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
-    img.src = dataUrl;
+
+    const parchmentImg = new Image();
+    parchmentImg.onload = () => {
+      drawToCanvas(parchmentImg);
+    };
+    parchmentImg.onerror = () => {
+      let dataUrl = localStorage.getItem(textureKey);
+      if (!dataUrl) {
+        dataUrl = generate();
+        try { localStorage.setItem(textureKey, dataUrl); } catch (err) { /* ignore */ }
+      }
+      const img = new Image();
+      img.onload = () => drawToCanvas(img);
+      img.src = dataUrl;
+    };
+    parchmentImg.src = 'assets/parchment.png';
   };
 
   window.APP.mapTexture = { apply };

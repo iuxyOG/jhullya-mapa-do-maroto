@@ -14,10 +14,10 @@
       part: 'Casa',
       questions: [
         { q: 'Qual energia te representa hoje?', a: ['Serena', 'Corajosa', 'Curiosa', 'Leal'] },
-        { q: 'Uma sala perfeita teria:', a: ['Livros antigos', 'Janelas para o ceu', 'Um laboratorio', 'Velas e mapas'] },
-        { q: 'Voce prefere:', a: ['Tramas sutis', 'Risos leves', 'Perguntas dificeis', 'Conversas profundas'] },
+        { q: 'Uma sala perfeita teria:', a: ['Livros antigos', 'Janelas para o céu', 'Um laboratório', 'Velas e mapas'] },
+        { q: 'Você prefere:', a: ['Tramas sutis', 'Risos leves', 'Perguntas difíceis', 'Conversas profundas'] },
         { q: 'Qual cor te abraça?', a: ['Azul', 'Dourado', 'Prata', 'Verde'] },
-        { q: 'Qual e seu superpoder?', a: ['Empatia', 'Inventividade', 'Foco', 'Calma'] },
+        { q: 'Qual é seu superpoder?', a: ['Empatia', 'Inventividade', 'Foco', 'Calma'] },
         { q: 'Que trilha ecoa?', a: ['Piano', 'Cordas', 'Sinos', 'Vento'] },
       ]
     },
@@ -25,16 +25,16 @@
       part: 'Varinha',
       questions: [
         { q: 'Que madeira chama?', a: ['Carvalho azul', 'Salgueiro', 'Nogueira lunar', 'Cedro'] },
-        { q: 'O que vibra no nucleo?', a: ['Fio de estrela', 'Pena cintilante', 'Raiz marinha', 'Sopro de aurora'] },
-        { q: 'Qual forma?', a: ['Fina e longa', 'Curta e precisa', 'Curva e suave', 'Firme e media'] },
-        { q: 'Qual temperatura?', a: ['Fria e clara', 'Quente e dourada', 'Neutra e serena', 'Eletrica e viva'] },
+        { q: 'O que vibra no núcleo?', a: ['Fio de estrela', 'Pena cintilante', 'Raiz marinha', 'Sopro de aurora'] },
+        { q: 'Qual forma?', a: ['Fina e longa', 'Curta e precisa', 'Curva e suave', 'Firme e média'] },
+        { q: 'Qual temperatura?', a: ['Fria e clara', 'Quente e dourada', 'Neutra e serena', 'Elétrica e viva'] },
       ]
     },
     {
       part: 'Patrono',
       questions: [
-        { q: 'Um lugar seguro parece:', a: ['Biblioteca', 'Beira-mar', 'Observatorio', 'Floresta'] },
-        { q: 'Quem te guia?', a: ['Ciencia', 'Amizade', 'Lua', 'Riso'] },
+        { q: 'Um lugar seguro parece:', a: ['Biblioteca', 'Beira-mar', 'Observatório', 'Floresta'] },
+        { q: 'Quem te guia?', a: ['Ciência', 'Amizade', 'Lua', 'Riso'] },
         { q: 'O som preferido:', a: ['Chuva leve', 'Passos na neve', 'Brisa', 'Risada curta'] },
       ]
     }
@@ -45,6 +45,8 @@
   const init = () => {
     initModal();
     initToast();
+    initSoundHint();
+    initSkipLink();
     initIntro();
     initQuiz();
     initTopbar();
@@ -56,6 +58,21 @@
     }
   };
 
+  const initSkipLink = () => {
+    const skip = qs('.skip-link');
+    const main = qs('#main');
+    if (skip && main) skip.addEventListener('click', () => { main.focus(); });
+  };
+
+  const initSoundHint = () => {
+    if (state.soundHintShown || state.soundOn) return;
+    state.soundHintShown = true;
+    saveState();
+    setTimeout(() => {
+      window.APP.toast('Clique em Som para ativar os efeitos sonoros.');
+    }, 1200);
+  };
+
   const initIntro = () => {
     const envelope = qs('#envelope');
     const start = qs('#btn-start');
@@ -63,6 +80,7 @@
 
     const openEnvelope = () => {
       envelope.classList.add('open');
+      envelope.closest('.intro-wrap')?.classList.add('envelope-opened');
       state.introOpened = true;
       saveState();
       if (state.soundOn) window.APP.audio.paper();
@@ -92,7 +110,7 @@
     });
     qs('#quiz-next').addEventListener('click', () => {
       if (!state.quizAnswers[answerKey()]) {
-        toast('Escolha uma opcao antes de continuar.');
+        toast('Escolha uma opção antes de continuar.');
         return;
       }
       if (quizIndex.question < quizData[quizIndex.part].questions.length - 1) quizIndex.question++;
@@ -166,7 +184,7 @@
 
   const derivePatronus = () => {
     const pick = state.quizAnswers['p2-q1'] || 'Lua';
-    if (pick.includes('Ciencia')) return 'Coruja de Neblina';
+    if (pick.includes('Ciência')) return 'Coruja de Neblina';
     if (pick.includes('Lua')) return 'Cervo Astral';
     if (pick.includes('Riso')) return 'Raposa Cintilante';
     return 'Lobo Calmo';
@@ -175,10 +193,17 @@
   const animateResults = () => {
     qs('#wand-text').textContent = `${state.results.wand} • ${state.results.house}`;
     qs('#patronus-text').textContent = state.results.patronus;
+    const patronusPanel = qs('#patronus-text').closest('.result-panel');
+    if (patronusPanel && !patronusPanel.querySelector('.patronus-romantic')) {
+      const romantic = document.createElement('p');
+      romantic.className = 'patronus-romantic';
+      romantic.textContent = 'Sua luz guia este mapa.';
+      qs('#patronus-text').after(romantic);
+    }
     const path = qs('#wand-path');
-    path.style.transition = 'stroke-dashoffset 1.6s ease';
-    requestAnimationFrame(() => { path.style.strokeDashoffset = '0'; });
-    animateSpark();
+    const spark = qs('#wand-spark');
+    requestAnimationFrame(() => { path.classList.add('drawn'); });
+    animateSpark(() => { if (spark) spark.classList.add('spark-ready'); });
     drawConstellation();
 
     qs('#btn-to-map').addEventListener('click', () => {
@@ -187,43 +212,160 @@
     }, { once: true });
   };
 
-  const animateSpark = () => {
+  const animateSpark = (onComplete) => {
     const spark = qs('#wand-spark');
     const path = qs('#wand-path');
+    if (!spark || !path) return;
     const length = path.getTotalLength();
+    const duration = 1600;
     let start = performance.now();
     const step = (t) => {
-      const p = Math.min(1, (t - start) / 1400);
-      const pt = path.getPointAtLength(length * p);
+      const p = Math.min(1, (t - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 1.2);
+      const pt = path.getPointAtLength(length * eased);
       spark.setAttribute('cx', pt.x);
       spark.setAttribute('cy', pt.y);
       if (p < 1) requestAnimationFrame(step);
+      else if (onComplete) onComplete();
     };
     requestAnimationFrame(step);
   };
 
   const drawConstellation = () => {
     const canvas = qs('#patronus-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const stars = Array.from({ length: 12 }).map(() => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: 1 + Math.random() * 2,
+    const w = canvas.width;
+    const h = canvas.height;
+    const starCount = 14;
+    const reducedMotion = window.APP.prefersReduced;
+    const stars = Array.from({ length: starCount }, () => ({
+      x: 0.1 * w + Math.random() * 0.8 * w,
+      y: 0.1 * h + Math.random() * 0.8 * h,
+      r: 1.2 + Math.random() * 2,
+      phase: Math.random() * Math.PI * 2,
     }));
-    ctx.strokeStyle = 'rgba(140, 210, 255, 0.5)';
-    ctx.beginPath();
-    stars.forEach((s, i) => {
-      if (i === 0) ctx.moveTo(s.x, s.y);
-      else ctx.lineTo(s.x, s.y);
-    });
-    ctx.stroke();
-    stars.forEach((s) => {
-      ctx.fillStyle = 'rgba(170, 230, 255, 0.9)';
+
+    function drawFrame(twinklePhase) {
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+
+      var nebulaGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
+      nebulaGrad.addColorStop(0, 'rgba(90, 160, 220, 0.08)');
+      nebulaGrad.addColorStop(0.5, 'rgba(140, 200, 255, 0.04)');
+      nebulaGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = nebulaGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = 'rgba(140, 210, 255, 0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
-    });
+      ctx.moveTo(stars[0].x, stars[0].y);
+      for (let i = 1; i < stars.length; i++) {
+        ctx.lineTo(stars[i].x, stars[i].y);
+      }
+      ctx.stroke();
+
+      stars.forEach((s, i) => {
+        const twinkle = 0.7 + 0.3 * Math.sin(twinklePhase + s.phase);
+        ctx.fillStyle = `rgba(170, 230, 255, ${0.85 * twinkle})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(200, 240, 255, ${0.5 * twinkle})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    let start = performance.now();
+    let lineProgress = 0;
+    const lineDuration = 1200;
+
+    function animateLines(now) {
+      const elapsed = now - start;
+      lineProgress = Math.min(1, elapsed / lineDuration);
+      const seg = 1 / (stars.length - 1);
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      var nebulaGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
+      nebulaGrad.addColorStop(0, 'rgba(90, 160, 220, 0.08)');
+      nebulaGrad.addColorStop(0.5, 'rgba(140, 200, 255, 0.04)');
+      nebulaGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = nebulaGrad;
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(140, 210, 255, 0.5)';
+      ctx.lineWidth = 1.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(stars[0].x, stars[0].y);
+      const drawTo = 1 + Math.floor(lineProgress * (stars.length - 1));
+      const partial = lineProgress * (stars.length - 1) - (drawTo - 1);
+      for (let i = 1; i < drawTo; i++) ctx.lineTo(stars[i].x, stars[i].y);
+      if (drawTo < stars.length && partial > 0) {
+        const ax = stars[drawTo - 1].x;
+        const ay = stars[drawTo - 1].y;
+        const bx = stars[drawTo].x;
+        const by = stars[drawTo].y;
+        ctx.lineTo(ax + (bx - ax) * partial, ay + (by - ay) * partial);
+      }
+      ctx.stroke();
+      for (let i = 0; i < drawTo; i++) {
+        const s = stars[i];
+        ctx.fillStyle = 'rgba(170, 230, 255, 0.9)';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (drawTo < stars.length && partial > 0) {
+        const s = stars[drawTo];
+        ctx.fillStyle = `rgba(170, 230, 255, ${0.5 + 0.4 * partial})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      if (lineProgress < 1) requestAnimationFrame(animateLines);
+      else if (reducedMotion) drawFrame(0);
+      else startTwinkle();
+    }
+
+    function startTwinkle() {
+      let twinkleStart = performance.now();
+      function twinkle(t) {
+        const phase = (t - twinkleStart) * 0.002;
+        drawFrame(phase);
+        if (canvas.isConnected) requestAnimationFrame(twinkle);
+      }
+      requestAnimationFrame(twinkle);
+    }
+
+    if (reducedMotion) {
+      ctx.save();
+      const nebulaGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.7);
+      nebulaGrad.addColorStop(0, 'rgba(90, 160, 220, 0.08)');
+      nebulaGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = nebulaGrad;
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(140, 210, 255, 0.5)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(stars[0].x, stars[0].y);
+      stars.slice(1).forEach((s) => ctx.lineTo(s.x, s.y));
+      ctx.stroke();
+      stars.forEach((s) => {
+        ctx.fillStyle = 'rgba(170, 230, 255, 0.9)';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+      return;
+    }
+    requestAnimationFrame(animateLines);
   };
 
   const initTopbar = () => {
@@ -246,6 +388,10 @@
     qs('#btn-outro').addEventListener('click', () => {
       transitions.showScreen(screens.outro);
     });
+
+    window.APP.events.addEventListener('outro:unlocked', () => {
+      window.APP.toast('O mapa está completo — você é incrível. ♥', 3200);
+    }, { once: true });
 
     window.APP.events.addEventListener('map:zoom', (e) => {
       const z = Math.round(e.detail * 100);
@@ -300,10 +446,10 @@
 
   const initToast = () => {
     const el = qs('#toast');
-    window.APP.toast = (msg) => {
+    window.APP.toast = (msg, durationMs) => {
       el.textContent = msg;
       el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 1800);
+      setTimeout(() => el.classList.remove('show'), durationMs || 2200);
     };
   };
 
@@ -312,5 +458,36 @@
     location.reload();
   });
 
-  document.addEventListener('DOMContentLoaded', init);
+  const registerSW = () => {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  };
+
+  const LOADER_MIN_MS = 2400;
+
+  const hideLoaderAndStart = () => {
+    document.body.classList.add('loader-done');
+    init();
+    registerSW();
+  };
+
+  let loaderMinElapsed = false;
+  let windowLoaded = false;
+
+  const maybeHideLoader = () => {
+    if (loaderMinElapsed && windowLoaded) hideLoaderAndStart();
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === 'complete') windowLoaded = true;
+    setTimeout(() => {
+      loaderMinElapsed = true;
+      maybeHideLoader();
+    }, LOADER_MIN_MS);
+  });
+
+  window.addEventListener('load', () => {
+    windowLoaded = true;
+    maybeHideLoader();
+  });
 })();

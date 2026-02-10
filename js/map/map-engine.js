@@ -22,7 +22,10 @@
     qs('#hud-stamps').textContent = state.stamps.length;
     const outroBtn = qs('#btn-outro');
     if (done >= window.APP.config.minMissionsForOutro) {
-      outroBtn.hidden = false;
+      if (outroBtn.hidden) {
+        outroBtn.hidden = false;
+        window.APP.events.dispatchEvent(new CustomEvent('outro:unlocked'));
+      }
     }
   };
 

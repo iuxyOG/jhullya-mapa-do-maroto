@@ -36,14 +36,16 @@
         <path class="ink-line" d="M220 180 C460 140 720 140 980 180" />
       </g>
       <g id="map-text" filter="url(#inkglow)">
-        <text x="320" y="260">Galeria das Estrelas</text>
-        <text x="860" y="200">Corredor da Ciencia</text>
-        <text x="1500" y="300">Torre da Lua</text>
-        <text x="1180" y="820">Bosque Azul</text>
-        <text x="320" y="840">Trilho dos Weasley</text>
-        <text x="120" y="420">Pontes de Tinta</text>
-        <text x="1280" y="520">Sala das Marés</text>
-        <text x="900" y="620">Observatorio Sul</text>
+        <g class="map-label"><rect class="map-label-bg" x="308" y="232" width="220" height="36" rx="6" /><text x="320" y="260">Galeria das Estrelas</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="848" y="172" width="248" height="36" rx="6" /><text x="860" y="200">Corredor da Ciência</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="1488" y="272" width="156" height="36" rx="6" /><text x="1500" y="300">Torre da Lua</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="1168" y="792" width="132" height="36" rx="6" /><text x="1180" y="820">Bosque Azul</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="308" y="812" width="200" height="36" rx="6" /><text x="320" y="840">Trilho dos Weasley</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="108" y="392" width="180" height="36" rx="6" /><text x="120" y="420">Pontes de Tinta</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="1268" y="492" width="168" height="36" rx="6" /><text x="1280" y="520">Sala das Marés</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="888" y="592" width="188" height="36" rx="6" /><text x="900" y="620">Observatório Sul</text></g>
+        <g class="map-label"><rect class="map-label-bg" x="1588" y="772" width="148" height="36" rx="6" /><text x="1600" y="800">Rio Azul</text></g>
+        <g class="map-label map-label-small"><rect class="map-label-bg" x="518" y="172" width="72" height="28" rx="4" /><text x="528" y="192">Tinta</text></g>
       </g>
       <g id="map-runes">
         <text class="rune" x="260" y="180">ᚠ ᚢ ᚦ</text>
@@ -55,8 +57,10 @@
 
     const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
     style.textContent = `
-      .ink-line { fill: none; stroke: #2b1b12; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.85; }
-      #map-text text { font-family: \"Times New Roman\", serif; font-size: 30px; fill: rgba(20,10,6,0.7); letter-spacing: 1px; }
+      .ink-line { fill: none; stroke: #3d3020; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; opacity: 0.8; }
+      .map-label-bg { fill: rgba(184, 152, 104, 0.18); stroke: rgba(184, 152, 104, 0.25); stroke-width: 0.8; }
+      #map-text text { font-family: \"Cinzel\", \"Times New Roman\", serif; font-size: 26px; fill: #2c2418; letter-spacing: 0.06em; font-weight: 500; }
+      .map-label-small text { font-size: 18px; fill: #352c1e; }
     `;
     svg.appendChild(style);
 
@@ -66,7 +70,7 @@
       c.setAttribute('cx', 100 + Math.random() * 1800);
       c.setAttribute('cy', 120 + Math.random() * 760);
       c.setAttribute('r', 3 + Math.random() * 8);
-      c.setAttribute('fill', 'rgba(30,18,10,0.35)');
+      c.setAttribute('fill', 'rgba(45,35,22,0.4)');
       blots.appendChild(c);
     }
 
@@ -155,21 +159,27 @@
     const ctx = minimap.ctx;
     ctx.clearRect(0, 0, minimap.w, minimap.h);
     const tex = qs('#map-texture');
-    if (tex) {
+    if (tex && tex.width) {
       ctx.drawImage(tex, 0, 0, minimap.w, minimap.h);
     } else {
       const grd = ctx.createLinearGradient(0, 0, minimap.w, minimap.h);
-      grd.addColorStop(0, '#d6c19a');
+      grd.addColorStop(0, '#d9c9a8');
       grd.addColorStop(1, '#b89f78');
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, minimap.w, minimap.h);
     }
-    ctx.strokeStyle = 'rgba(40,20,10,0.5)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(10, minimap.h - 20);
-    ctx.bezierCurveTo(60, 60, 140, 40, minimap.w - 10, 20);
-    ctx.stroke();
+    if (svgImage && svgImage.complete && svgImage.naturalWidth) {
+      ctx.globalAlpha = 0.85;
+      ctx.drawImage(svgImage, 0, 0, minimap.w, minimap.h);
+      ctx.globalAlpha = 1;
+    } else {
+      ctx.strokeStyle = 'rgba(40,20,10,0.5)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(10, minimap.h - 20);
+      ctx.bezierCurveTo(60, 60, 140, 40, minimap.w - 10, 20);
+      ctx.stroke();
+    }
   };
 
   const renderMinimap = (pins, doneMap) => {

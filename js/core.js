@@ -9,7 +9,7 @@
     name: "Jhullya Isabela",
     date: "21 de setembro",
     theme: "blue-dark",
-    mapTextureVersion: "v3",
+    mapTextureVersion: "v4",
     minMissionsForOutro: 10,
     secretSequenceIds: ["m3", "m8", "m1", "m11"],
   };

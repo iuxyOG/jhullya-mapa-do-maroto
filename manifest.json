@@ -1,0 +1,16 @@
+{
+  "name": "Mapa do Maroto - Jhullya Isabela",
+  "short_name": "Mapa Maroto",
+  "description": "Experiência fan-made do Mapa do Maroto: magia, ciência e descobertas para Jhullya Isabela.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#0a1020",
+  "orientation": "any",
+  "lang": "pt-BR",
+  "icons": [
+    {"src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+    {"src": "assets/icon.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "assets/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}

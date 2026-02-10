@@ -56,7 +56,7 @@
       state.secrets.ron = true;
       if (!state.stamps.includes('ron')) state.stamps.push('ron');
       saveState();
-      window.APP.toast('Bem Weasley: voce achou o Ron!');
+      window.APP.toast('Bem Weasley: você achou o Ron!');
       window.APP.particles.confetti();
       glow.remove();
       ron.remove();
@@ -98,7 +98,7 @@
       if (!state.stamps.includes('malfeito')) state.stamps.push('malfeito');
       saveState();
       window.APP.ink.writeMessage('Malfeito Feito', 1200);
-      window.APP.toast('Sequencia secreta ativada.');
+      window.APP.toast('Sequência secreta ativada.');
       sequence = [];
     } else if (sequence.length === config.secretSequenceIds.length) {
       window.APP.toast('A tinta se apaga e recomeça.');

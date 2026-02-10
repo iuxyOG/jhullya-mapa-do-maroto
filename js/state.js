@@ -11,6 +11,7 @@
     secrets: { ron: false, rare: false, sequence: false, mapResponded: false },
     mode: "day",
     soundOn: false,
+    soundHintShown: false,
   };
 
   const load = () => {
